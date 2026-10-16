@@ -1,0 +1,411 @@
+# Mihomo / Clash 通用配置 
+# OpenClash · Clash Verge  · Stash 
+# ──────────────────────────────────────────────────────────────
+# • 本配置作为 Sub-Store 配置来源，统一维护三端共用的基础配置。
+# • 通过 Sub-Store 脚本对不同客户端进行定制化覆写。
+# • 各敏感配置、客户端的专属参数、兼容性调整及功能差异，由对应脚本处理。
+
+# 客户端兼容性
+# ──────────────────────────────────────────────────────────────
+# • OpenClash（openwrt）：基于 Mihomo 内核运行。
+# • Clash Verge（macOS）：基于 Mihomo 内核运行。
+# • Stash（iOS）：兼容大部分通用配置，部分 Mihomo 专属字段可能不受支持。
+
+# 注意事项
+# ──────────────────────────────────────────────────────────────
+# • Stash 不支持以下 Mihomo reject 节点定义：- {name: 🚫 拒绝, type: reject}
+# • 使用 Tailscale 时，请在 Stash「设置 → 隧道 → 跳过路由」中移除 192.168.0.0/16，否则访问家庭内网时可能无法通过
+
+# 维护原则：
+# ──────────────────────────────────────────────────────────────
+# • 优先保持三端共用配置一致，差异通过 Sub-Store 脚本处理。
+# • 修改规则、策略组、DNS 或 Provider 前，先确认三端兼容性。
+# • 不要将机场订阅地址、认证密钥等敏感信息提交到公开仓库。
+
+# 参考文档
+# ──────────────────────────────────────────────────────────────
+# • Mihomo wiki：
+#   https://wiki.metacubex.one/
+# • Stash wiki：
+#   https://stash.wiki/
+# ══════════════════════════════════════════════════════════════
+
+port: 7890
+socks-port: 7891
+redir-port: 7892
+mixed-port: 7893
+tproxy-port: 7895
+allow-lan: true
+mode: rule
+
+authentication: []
+# RESTful API CORS标头配置
+external-controller-cors:
+  allow-origins:
+    - "*"
+  allow-private-network: true
+
+# 统一测速延迟计算
+unified-delay: true
+
+# 多 IP 并发连接，优先使用最先成功的 IP
+tcp-concurrent: true
+
+profile:
+  # 保存策略组选择结果
+  store-selected: true
+  # 保存 fake-ip 映射
+  store-fake-ip: true
+
+dns:
+  enable: true # 关闭将使用系统 DNS
+  cache-algorithm: arc # ARC 缓存算法
+  listen: 0.0.0.0:7874 # 开启 DNS 服务器监听
+  ipv6: false
+
+  # Fake-IP
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+
+  # 专用于节点域名解析的 DNS 服务器，非必要配置项，如果不填则遵循nameserver-policy、nameserver和fallback的配置
+  proxy-server-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  
+  # 配置后面的nameserver、fallback和nameserver-policy向dns服务器的连接过程是否遵守遵守rules规则
+  # 如果为false（默认值）则这三部分的dns服务器在未特别指定的情况下会直连
+  # 如果为true，将会按照rules的规则匹配链接方式（走代理或直连），如果有特别指定则任然以指定值为准
+  # 仅当proxy-server-nameserver非空时可以开启此选项, 强烈不建议和prefer-h3一起使用
+  # 此外，这三者配置中的dns服务器如果出现域名会采用default-nameserver配置项解析，也请确保正确配置default-nameserver
+  respect-rules: true
+  # 配置fake-ip-filter的匹配模式，默认为blacklist，即如果匹配成功不返回fake-ip
+  # 可设置为whitelist，即只有匹配成功才返回fake-ip
+  # 也可配置为rule，规则模式语法见fake-ip-filter说明
+  fake-ip-filter-mode: blacklist
+  fake-ip-filter:
+    - "*.lan"
+    - "*.local"
+    # fakeip-filter 为 rule-providers 中的名为 fakeip-filter 规则订阅，
+    # 且 behavior 必须为 domain/classical，当为 classical 时仅会生效域名类规则
+    - rule-set:fakeip-filter
+  #  DNS 分流 nameserver-policy 优先级高于 nameserver/fallback
+  nameserver-policy:
+    # 中国大陆 / Private / Apple 在sub-store通过脚本改成运营商DNS服务器或者system解析
+    "geosite:cn,private,apple-cn":
+      - 223.5.5.5 
+      - 119.29.29.29
+    "geosite:category-ads-all": rcode://success # DNS 层面的广告域名拦截  
+  # DNS 主要域名配置
+  # 支持 UDP，TCP，DoT，DoH，DoQ
+  # 这部分为主要 DNS 配置，影响所有直连，确保使用对大陆解析精准的 DNS
+  nameserver:
+    - https://1.1.1.1/dns-query
+    - https://8.8.8.8/dns-query
+  use-hosts: true
+
+  # 用于解析 nameserver，fallback 以及其他 DNS 服务器配置的，DNS 服务域名
+  # 只能使用纯 IP 地址，可使用加密 DNS
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+
+sniffer:
+  enable: true
+  # 对 Redir-Host / Fake-IP 未命中的纯 IP 流量强制进行嗅探
+  force-dns-mapping: true
+  # 对所有未携带域名的纯 IP 连接尝试提取 SNI/Host
+  parse-pure-ip: true
+  # 全局默认不覆写目标地址（仅用于匹配分流规则，防止破坏 P2P/私有协议/指定IP连接）
+  override-destination: false
+  # 定义需要嗅探的协议与端口
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+
+  # 强制嗅探的域名（即使已有域名映射也重新嗅探）
+  force-domain:
+    - "+.v2ex.com"
+
+  # 跳过嗅探的白名单域名（极其重要：防止推送通知、米家/HomeKit智能家居及加密通讯断连）
+  skip-domain:
+    - "+.local"
+    - "Mijia Cloud"
+    - "+.io.mi.com"
+    - "+.push.apple.com"
+    - "+.apple.com"
+    - "+.icloud.com"
+    - "+.wechat.com"
+    - "+.qpic.cn"
+    - "+.qq.com"
+    - "+.bilibili.com"
+  # 跳过嗅探的目标 IP 段（防止局域网组播、广播及本地设备通讯被干扰）
+  skip-dst-address:
+    - 192.168.0.0/16
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 224.0.0.0/4
+    - 255.255.255.255/32
+
+proxyParms: &proxyParms
+  type: http
+  # 填写你的机场订阅链接或 Sub-Store 生成的组合订阅链接
+  url: "https://your-subscription-url.com"
+  # 自动更新间隔：86400 秒（24 小时）
+  interval: 86400
+  # 下载订阅时走直连（Mihomo 生效，防止套娃死循环；Stash 自动忽略）
+  proxy: DIRECT
+  
+  # 节点健康检查与延迟测试
+  health-check:
+    enable: true
+    # 推荐使用 gstatic 或 cp.cloudflare.com 的 204 地址
+    url: https://www.gstatic.com/generate_204
+    # 测速间隔：300 秒（5 分钟）
+    interval: 300
+    # 惰性测速：仅当前策略组被使用时才测速，大幅节省移动端电量和机场流量
+    lazy: true
+    # 以下两项在 Mihomo (OpenClash / Clash Verge) 中生效，Stash 会静默忽略
+    timeout: 5000
+
+proxy-providers:
+  main: {url: 'https://your-subscription-url.com', <<: *proxyParms}
+  secondary: {url: 'https://your-subscription-url.com', <<: *proxyParms}
+
+proxies:
+  - {name: 🎯 直连, type: direct, udp: true}
+  - {name: 🚫 拒绝, type: reject}
+# 锚点
+check: &check {url: "https://www.gstatic.com/generate_204", interval: 600, timeout: 3000, lazy: true, max-failed-times: 3}
+default: &default
+  type: select
+  proxies:
+    - 🥇 主力自动
+    - 🥈 备用自动
+    - 🚀 全部手动
+    - 🥇 主力手动
+    - 🥈 备用手动
+    - 🇭🇰 香港
+    - 🇭🇰 香港自动
+    - 🇭🇰 备用香港自动
+    - 🇭🇰 香港故障转移
+    - 🇺🇸 美国
+    - 🇺🇸 美国自动
+    - 🇺🇸 备用美国自动
+    - 🇺🇸 美国故障转移
+    - 🇯🇵 日本
+    - 🇯🇵 日本自动
+    - 🇯🇵 备用日本自动
+    - 🇯🇵 日本故障转移
+    - 🇸🇬 新加坡
+    - 🇸🇬 新加坡自动
+    - 🇸🇬 备用新加坡自动
+    - 🇼🇸 台湾
+    - 🇼🇸 台湾自动
+    - 🇼🇸 备用台湾自动
+    - 🌍 其他地区
+    - 🎯 直连
+intl: &intl
+  type: select
+  proxies:
+    - 🇺🇸 美国故障转移
+    - 🇯🇵 日本故障转移
+    - 🇭🇰 香港故障转移
+    - 🇺🇸 美国自动
+    - 🇺🇸 备用美国自动
+    - 🇯🇵 日本自动
+    - 🇯🇵 备用日本自动
+    - 🇭🇰 香港自动
+    - 🇭🇰 备用香港自动
+    - 🇸🇬 新加坡自动
+    - 🇸🇬 备用新加坡自动
+    - 🇼🇸 台湾自动
+    - 🇼🇸 备用台湾自动
+    - 🌍 其他地区
+    - 🥇 主力自动
+    - 🚀 全部手动
+
+proxy-groups:
+  - {name: AI, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png, <<: *intl}
+  - {name: Google, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png, <<: *intl}
+  - {name: YouTube, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png, <<: *default}
+  - {name: GitHub, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png, <<: *default}
+  - {name: Telegram, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png, <<: *default}
+  - {name: Apple, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png, <<: *default}
+  - {name: TMDB, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png, <<: *default}
+  - {name: Streaming, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Streaming.png, <<: *default}
+  - {name: Microsoft, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png, <<: *default}
+  - {name: Game, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png, <<: *default}
+  - {name: Crypto, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Cryptocurrency.png, <<: *default}
+  - {name: Pornhub, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Pornhub.png, <<: *default}
+  - {name: Global, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png, <<: *default}
+  - {name: China, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/China.png, type: select, proxies: [🎯 直连, 🚀 全部手动]}
+  - {name: Final, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png, <<: *default}
+
+  # 基础聚合
+  - {name: 🚀 全部手动, type: select, use: [main,secondary]}
+  - {name: 🥇 主力手动, type: select, use: [main]}
+  - {name: 🥈 备用手动, type: select, use: [secondary]}
+  - {name: 🎯 全部自动, type: url-test, use: [main,secondary], url: "https://www.gstatic.com/generate_204", <<: *check, hidden: true}
+  - {name: 🥇 主力自动, type: url-test, use: [main], url: "https://www.gstatic.com/generate_204", <<: *check, hidden: true}
+  - {name: 🥈 备用自动, type: url-test, use: [secondary], url: "https://www.gstatic.com/generate_204", <<: *check, hidden: true}
+
+  # 地区分组
+  - {name: 🇭🇰 香港, type: select, use: [main,secondary], filter: "(?i)港|hk|hong ?kong"}
+  - {name: 🇭🇰 香港自动, type: url-test, use: [main], filter: "(?i)港|hk|hong ?kong", <<: *check, hidden: true}
+  - {name: 🇭🇰 备用香港自动, type: url-test, use: [secondary], filter: "(?i)港|hk|hong ?kong", <<: *check, hidden: true}
+  - {name: 🇭🇰 香港故障转移, type: fallback, use: [main,secondary], <<: *check, filter: "(?i)港|hk|hong ?kong"}
+  - {name: 🇯🇵 日本, type: select, use: [main,secondary], filter: "(?i)日|jp|japan"}
+  - {name: 🇯🇵 日本自动, type: url-test, use: [main], filter: "(?i)日|jp|japan", <<: *check, hidden: true}
+  - {name: 🇯🇵 备用日本自动, type: url-test, use: [secondary], filter: "(?i)日|jp|japan", <<: *check, hidden: true}
+  - {name: 🇯🇵 日本故障转移, type: fallback, use: [main,secondary], <<: *check, filter: "(?i)日|jp|japan"}
+  - {name: 🇺🇸 美国, type: select, use: [main,secondary], filter: "(?i)美|us|united ?states"}
+  - {name: 🇺🇸 美国自动, type: url-test, use: [main], filter: "(?i)美|us|united ?states", <<: *check, hidden: true}
+  - {name: 🇺🇸 备用美国自动, type: url-test, use: [secondary], filter: "(?i)美|us|united ?states", <<: *check, hidden: true}
+  - {name: 🇺🇸 美国故障转移, type: fallback, use: [main,secondary], <<: *check, filter: "(?i)美|us|united ?states"}
+  - {name: 🇸🇬 新加坡, type: select, use: [main,secondary], filter: "(?i)新|sg|singapore"}
+  - {name: 🇸🇬 新加坡自动, type: url-test, use: [main], filter: "(?i)新|sg|singapore", <<: *check, hidden: true}
+  - {name: 🇸🇬 备用新加坡自动, type: url-test, use: [secondary], filter: "(?i)新|sg|singapore", <<: *check, hidden: true}
+  - {name: 🇼🇸 台湾, type: select, use: [main,secondary], filter: "(?i)台|tw|taiwan"}
+  - {name: 🇼🇸 台湾自动, type: url-test, use: [main], filter: "(?i)台|tw|taiwan", <<: *check, hidden: true}
+  - {name: 🇼🇸 备用台湾自动, type: url-test, use: [secondary], filter: "(?i)台|tw|taiwan", <<: *check, hidden: true}
+  - {name: 🌍 其他地区, type: select, use: [main,secondary], filter: "^(?!.*(?i:港|hk|hong ?kong|台|tw|taiwan|日|jp|japan|新|sg|singapore|美|us|united ?states)).*$"}
+
+rules:
+  # 禁用 QUIC (UDP 443)，强制回退 TCP 以确保分流准确与连接稳定
+  - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT
+
+  # 广告 / 拒绝
+  - RULE-SET,ads-reject,REJECT
+
+  # LAN / 本地网络 / 私有地址
+  - GEOIP,LAN,DIRECT,no-resolve
+  - IP-CIDR,100.64.0.0/10,DIRECT,no-resolve # Tailscale Tailnet 网段
+  - RULE-SET,private-domain,DIRECT
+  - RULE-SET,private-ip,DIRECT,no-resolve
+
+  # Apple 基础设施：时间同步与推送服务直连
+  - DOMAIN,time.apple.com,DIRECT
+  - DOMAIN,time.asia.apple.com,DIRECT
+  - DOMAIN,push.apple.com,DIRECT
+  - DOMAIN,courier.push.apple.com,DIRECT
+  - DOMAIN,pushex.apple.com,DIRECT
+
+  # Tailscale：海外 DERP 中继走代理，控制面及其他官方域名直连
+  - DOMAIN-REGEX,^derp[a-z0-9-]*\.tailscale\.com$,Global
+  - DOMAIN,login.tailscale.com,DIRECT
+  - DOMAIN,controlplane.tailscale.com,DIRECT
+  - RULE-SET,tailscale-domain,DIRECT
+
+  - DOMAIN-SUFFIX,themoviedb.org,TMDB
+  - DOMAIN-SUFFIX,tmdb.org,TMDB
+  - DOMAIN-SUFFIX,tmdb.com,TMDB
+  - DOMAIN-SUFFIX,thetvdb.com,TMDB
+  - DOMAIN-SUFFIX,tvdb.com,TMDB
+  - DOMAIN-SUFFIX,tvdb.org,TMDB
+  - DOMAIN-SUFFIX,fanart.tv,TMDB
+  - DOMAIN-SUFFIX,imdb.com,TMDB
+  - DOMAIN-SUFFIX,imdb-api.com,TMDB
+  - DOMAIN-SUFFIX,media-amazon.com,TMDB
+  - DOMAIN-SUFFIX,trakt.tv,TMDB
+  - DOMAIN-SUFFIX,omdbapi.com,TMDB
+  - DOMAIN-SUFFIX,opensubtitles.org,TMDB
+  - DOMAIN-SUFFIX,opensubtitles.com,TMDB
+
+  # Apple：大陆服务与 iCloud 优先直连，其他 Apple 服务使用苹果策略组
+  - RULE-SET,apple-cn-domain,China
+  - RULE-SET,icloud-domain,China
+  - RULE-SET,apple-domain,Apple
+
+  - RULE-SET,ai-domain,AI
+  - RULE-SET,youtube-domain,YouTube
+  - RULE-SET,google-domain,Google
+  - RULE-SET,github-domain,GitHub
+  - RULE-SET,microsoft-domain,Microsoft
+
+  - RULE-SET,tiktok-domain,Streaming
+  - RULE-SET,netflix-domain,Streaming
+  - RULE-SET,disney-domain,Streaming
+  - RULE-SET,amazon-domain,Streaming
+  - RULE-SET,hbo-domain,Streaming
+  - RULE-SET,spotify-domain,Streaming
+
+  - DOMAIN-SUFFIX,steamcontent.com,DIRECT
+  - DOMAIN-SUFFIX,cm.steampowered.com,DIRECT
+  - DOMAIN-SUFFIX,steamstatic.com,DIRECT
+  - RULE-SET,steam-domain,Game
+  - RULE-SET,epic-domain,Game
+  - RULE-SET,nintendo-domain,Game
+  - RULE-SET,playstation-domain,Game
+  - RULE-SET,ea-domain,Game
+  - RULE-SET,telegram-domain,Telegram
+  
+  - RULE-SET,crypto-domain,Crypto
+  - RULE-SET,sex-domain,Pornhub
+
+  # 中国大陆域名优先匹配
+  - RULE-SET,china-domain,China
+
+  # 海外域名规则
+  - RULE-SET,geolocation-domain,Global
+
+  # 全局 IP 规则集中兜底（所有域名均未命中时，才匹配 IP 规则）
+  - RULE-SET,netflix-ip,Streaming,no-resolve
+  - RULE-SET,telegram-ip,Telegram,no-resolve
+  - RULE-SET,google-ip,Google,no-resolve
+  - RULE-SET,china-ip,China,no-resolve
+  - GEOIP,CN,China,no-resolve
+
+  # 最终兜底：匹配以上所有规则均未命中的流量
+  - MATCH,Final
+
+# Rule Provider Anchor
+# domain → MRS 域名规则
+# ip     → MRS IP-CIDR 规则
+# class  → Classical 文本规则
+# 所有 Provider 默认 24 小时更新一次。
+# ========================
+
+rule-anchor:
+  ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
+  domain: &domain {type: http, interval: 86400, behavior: domain, format: mrs}
+  class: &class {type: http, interval: 86400, behavior: classical, format: text}
+
+rule-providers:
+  fakeip-filter: {<<: *domain, path: ./rule_provider/fakeip-filter.mrs, url: "https://github.com/DustinWin/ruleset_geodata/raw/mihomo-ruleset/fakeip-filter.mrs"}
+  ads-reject: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ads-all.mrs"}
+  ai-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.mrs"}
+  github-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/github.mrs"}
+  microsoft-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs"}
+  apple-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.mrs"}
+  apple-cn-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple-cn.mrs"}
+  icloud-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/icloud.mrs"}
+  google-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs"}
+  google-ip: {<<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.mrs"}
+  youtube-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"}
+  tiktok-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tiktok.mrs"}
+  netflix-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/netflix.mrs"}
+  netflix-ip: {<<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/netflix.mrs"}
+  disney-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/disney.mrs"}
+  amazon-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/amazon.mrs"}
+  hbo-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/hbo.mrs"}
+  spotify-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/spotify.mrs"}
+  steam-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam.mrs"}
+  epic-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/epicgames.mrs"}
+  nintendo-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/nintendo.mrs"}
+  playstation-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/playstation.mrs"}
+  ea-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ea.mrs"}
+  crypto-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-cryptocurrency.mrs"}
+  telegram-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs"}
+  telegram-ip: {<<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs"}
+  geolocation-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.mrs"}
+  china-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs"}
+  china-ip: {<<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs"}
+  private-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs"}
+  private-ip: {<<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs"}
+  sex-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-porn.mrs"}
+  tailscale-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tailscale.mrs"}
