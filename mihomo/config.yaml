@@ -230,7 +230,7 @@ intl: &intl
     - 🚀 全部手动
 
 proxy-groups:
-  - {name: AI, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png, <<: *intl}
+  - {name: AI, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png, <<: *intl}
   - {name: Google, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png, <<: *intl}
   - {name: YouTube, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png, <<: *default}
   - {name: GitHub, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png, <<: *default}
