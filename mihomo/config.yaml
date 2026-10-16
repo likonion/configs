@@ -184,11 +184,13 @@ check: &check {url: "https://www.gstatic.com/generate_204", interval: 600, timeo
 default: &default
   type: select
   proxies:
+    - 🛟 故障转移
     - 🥇 主力自动
     - 🥈 备用自动
-    - 🚀 全部手动
+    - 🧭 全部自动
     - 🥇 主力手动
     - 🥈 备用手动
+    - 🚀 全部手动
     - 🇭🇰 香港
     - 🇭🇰 香港自动
     - 🇭🇰 备用香港自动
@@ -227,6 +229,10 @@ intl: &intl
     - 🇼🇸 备用台湾自动
     - 🌍 其他地区
     - 🥇 主力自动
+    - 🥈 备用自动
+    - 🧭 全部自动
+    - 🥇 主力手动
+    - 🥈 备用手动
     - 🚀 全部手动
 
 proxy-groups:
@@ -250,9 +256,10 @@ proxy-groups:
   - {name: 🚀 全部手动, type: select, use: [main,secondary]}
   - {name: 🥇 主力手动, type: select, use: [main]}
   - {name: 🥈 备用手动, type: select, use: [secondary]}
-  - {name: 🎯 全部自动, type: url-test, use: [main,secondary], url: "https://www.gstatic.com/generate_204", <<: *check, hidden: true}
+  - {name: 🧭 全部自动, type: url-test, use: [main,secondary], url: "https://www.gstatic.com/generate_204", <<: *check, hidden: true}
   - {name: 🥇 主力自动, type: url-test, use: [main], url: "https://www.gstatic.com/generate_204", <<: *check, hidden: true}
   - {name: 🥈 备用自动, type: url-test, use: [secondary], url: "https://www.gstatic.com/generate_204", <<: *check, hidden: true}
+  - {name: 🛟 故障转移, type: fallback, <<: *check, proxies: [🥇 主力自动, 🥈 备用自动]}
 
   # 地区分组
   - {name: 🇭🇰 香港, type: select, use: [main,secondary], filter: "(?i)港|hk|hong ?kong"}
