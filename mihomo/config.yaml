@@ -239,6 +239,7 @@ proxy-groups:
   - {name: AI, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png, <<: *intl}
   - {name: Google, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png, <<: *intl}
   - {name: YouTube, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png, <<: *default}
+  - {name: Twitter, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png, <<: *default}
   - {name: GitHub, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png, <<: *default}
   - {name: Telegram, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png, <<: *default}
   - {name: Apple, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png, <<: *default}
@@ -334,6 +335,7 @@ rules:
   - RULE-SET,github-domain,GitHub
   - RULE-SET,microsoft-domain,Microsoft
 
+  - RULE-SET,twitter-domain,Twitter
   - RULE-SET,tiktok-domain,Streaming
   - RULE-SET,netflix-domain,Streaming
   - RULE-SET,disney-domain,Streaming
@@ -364,6 +366,7 @@ rules:
   - RULE-SET,netflix-ip,Streaming,no-resolve
   - RULE-SET,telegram-ip,Telegram,no-resolve
   - RULE-SET,google-ip,Google,no-resolve
+  - RULE-SET,twitter-ip,Twitter,no-resolve
   - RULE-SET,china-ip,China,no-resolve
   - GEOIP,CN,China,no-resolve
 
@@ -416,3 +419,5 @@ rule-providers:
   private-ip: {<<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs"}
   sex-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-porn.mrs"}
   tailscale-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tailscale.mrs"}
+  twitter-domain: {<<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/twitter.mrs"}
+  twitter-ip: {<<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/twitter.mrs"}
