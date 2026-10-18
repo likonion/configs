@@ -284,6 +284,9 @@ proxy-groups:
   - {name: 🌍 其他地区, type: select, use: [main,secondary], filter: "^(?!.*(?i:港|hk|hong ?kong|台|tw|taiwan|日|jp|japan|新|sg|singapore|美|us|united ?states)).*$"}
 
 rules:
+  # 拦截失效/离线的云服务器节点，防止内网设备持续发起无效直连导致日志频繁刷 i/o timeout
+  - IP-CIDR,110.42.12.249/32,REJECT,no-resolve
+
   # 禁用 QUIC (UDP 443)，强制回退 TCP 以确保分流准确与连接稳定
   - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT
 
