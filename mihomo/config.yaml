@@ -109,6 +109,7 @@ dns:
     - 223.5.5.5
     - 119.29.29.29
 
+# 在透明代理或局域网劫持环境下，还原流量真实的访问目标域名，解决由于客户端直连 IP 或 DNS 映射丢失导致的“无法命中规则”问题。
 sniffer:
   enable: true
   # 对 Redir-Host / Fake-IP 未命中的纯 IP 流量强制进行嗅探
@@ -124,32 +125,58 @@ sniffer:
       override-destination: true
     TLS:
       ports: [443, 8443]
-    QUIC:
-      ports: [443, 8443]
 
   # 强制嗅探的域名（即使已有域名映射也重新嗅探）
   force-domain:
     - "+.v2ex.com"
 
-  # 跳过嗅探的白名单域名（极其重要：防止推送通知、米家/HomeKit智能家居及加密通讯断连）
+    # 跳过嗅探的白名单域名（防止智能家居心跳、长连接及推送中断）
   skip-domain:
+    # 本地局域网与组播
     - "+.local"
-    - "Mijia Cloud"
+    - "+.lan"
+
+    # Aqara (绿米) 解决手机端 Aqara App 异常
+    - "+.aqara.com"
+    - "+.aqara.cn"
+    - "+.lumiunited.com"
+    - "+.aiot-rpc.ankasa.cn"
+
+    # 米家 / 小米 IoT (去除原无效的 "Mijia Cloud")
     - "+.io.mi.com"
+    - "+.mi.com"
+    - "+.xiaomi.com"
+    - "+.mi-idc.com"
+
+    # Apple 推送 / HomeKit 通讯
     - "+.push.apple.com"
     - "+.apple.com"
     - "+.icloud.com"
+
+    # 微信 / 腾讯长连接与通知
     - "+.wechat.com"
+    - "+.weixin.qq.com"
     - "+.qpic.cn"
     - "+.qq.com"
+
+    # 影音直连测试
     - "+.bilibili.com"
+
   # 跳过嗅探的目标 IP 段（防止局域网组播、广播及本地设备通讯被干扰）
   skip-dst-address:
-    - 192.168.0.0/16
+    # RFC 1918 私网段
     - 10.0.0.0/8
     - 172.16.0.0/12
+    - 192.168.0.0/16
+    # 运营商内网 CGNAT
+    - 100.64.0.0/10
+    # 组播与广播
     - 224.0.0.0/4
     - 255.255.255.255/32
+    # IPv6 链路本地与组播 (若开启 IPv6)
+    - "fc00::/7"
+    - "fe80::/10"
+    - "ff00::/8"
 
 proxyParms: &proxyParms
   type: http
