@@ -43,9 +43,10 @@
 # 锚点定义
 rule-anchor:
   # 机场订阅
-  PROXYPROVIDERS: &PROXYPROVIDERS {type: http, interval: 86400, proxy: DIRECT, health-: {enable: true, url: https://www.gstatic.com/generate_204, interval: 300, lazy: true, timeout: 5000}}
+  PROXYPROVIDERS: &PROXYPROVIDERS {type: http, interval: 86400, proxy: DIRECT, health-check: {enable: true, url: https://www.gstatic.com/generate_204, interval: 300, lazy: true, timeout: 5000}}
   # 节点选择
   DEFAULTNODE: &DEFAULTNODE {type: select, proxies: [🛟 故障转移, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动, 🇭🇰 香港, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇭🇰 香港故障转移, 🇺🇸 美国, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇺🇸 美国故障转移, 🇯🇵 日本, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇯🇵 日本故障转移, 🇸🇬 新加坡, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区, 直连]}
+  DEFAULTDIRECTNODE: &DEFAULTDIRECTNODE {type: select, proxies: [直连, 🛟 故障转移, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动, 🇭🇰 香港, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇭🇰 香港故障转移, 🇺🇸 美国, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇺🇸 美国故障转移, 🇯🇵 日本, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇯🇵 日本故障转移, 🇸🇬 新加坡, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区]}
   INTLNODE: &INTLNODE {type: select, proxies: [🇺🇸 美国故障转移, 🇯🇵 日本故障转移, 🇭🇰 香港故障转移, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动]}
   HEALTH: &HEALTH {url: "https://www.gstatic.com/generate_204", interval: 600, timeout: 3000, lazy: true, max-failed-times: 3}
   # 节点筛选
@@ -58,7 +59,7 @@ rule-anchor:
   # 规则集
   IP: &IP {type: http, interval: 86400, behavior: ipcidr, format: mrs}
   DOMAIN: &DOMAIN {type: http, interval: 86400, behavior: domain, format: mrs}
-  DOMAINTEXT: &DOMAINTEXT {type: http, interval: 86400, behavior: classical, format: text}
+  DOMAINTEXT: &DOMAINTEXT {type: http, interval: 86400, behavior: domain, format: text}
 
 
 port: 7890
@@ -110,6 +111,7 @@ dns:
   fake-ip-filter-mode: blacklist
   # fake-ip-filter 和 nameserver-policy 保持同步
   fake-ip-filter:
+    # behavior 必须为 domain/classical，当为 classical 时仅会生效域名类规则
     - rule-set:fakeip-filter
     - rule-set:fakeipfilter-cn
     - rule-set:fakeipfilter-!cn
@@ -117,9 +119,6 @@ dns:
     - rule-set:china-domain
     - rule-set:apple-cn-domain
     - rule-set:icloud-domain
-    # fakeip-filter 为 rule-providers 中的名为 fakeip-filter 规则订阅，
-    # 且 behavior 必须为 domain/classical，当为 classical 时仅会生效域名类规则
-    - rule-set:fakeip-filter
   #  DNS 分流 nameserver-policy 优先级高于 nameserver/fallback
   nameserver-policy:
     # 策略分流解析器：针对国内服务与内网/直连域名，强制禁用 HTTPS (Type 65) 查询，防止现代浏览器（如 Safari/Chrome）获取 ECH/SVCB 加密扩展导致分流失效或握手卡顿
@@ -136,10 +135,10 @@ dns:
   # 支持 UDP，TCP，DoT，DoH，DoQ
   # 这部分为主要 DNS 配置，影响所有直连，确保使用对大陆解析精准的 DNS
   nameserver:
-    - "https://1.1.1.1/dns-query#🥇 主力手动ecs=223.5.5.0/24"
-    - "https://8.8.8.8/dns-query#🥇 主力手动ecs=223.5.5.0/24"
+    - "https://1.1.1.1/dns-query#🥇 主力手动&ecs=223.5.5.0/24"
+    - "https://8.8.8.8/dns-query#🥇 主力手动&ecs=223.5.5.0/24"
   fallback:
-    - https://8.8.8.8/dns-query#默认代理
+    - "https://8.8.8.8/dns-query#🥇 主力手动"
   fallback-filter:
     geoip: true
     geoip-code: CN
@@ -170,6 +169,8 @@ sniffer:
       ports: [80, 8080-8880]
       override-destination: true
     TLS:
+      ports: [443, 8443]
+    QUIC:
       ports: [443, 8443]
 
   # 强制嗅探的域名（即使已有域名映射也重新嗅探）
@@ -239,16 +240,16 @@ proxy-groups:
   - {name: Twitter, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png, <<: *DEFAULTNODE}
   - {name: GitHub, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png, <<: *DEFAULTNODE}
   - {name: Telegram, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png, <<: *DEFAULTNODE}
-  - {name: Apple, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png, <<: *DEFAULTNODE}
+  - {name: Apple, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png, <<: *DEFAULTDIRECTNODE}
   - {name: TMDB, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png, <<: *DEFAULTNODE}
   - {name: Streaming, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Streaming.png, <<: *DEFAULTNODE}
-  - {name: Microsoft, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png, <<: *DEFAULTNODE}
+  - {name: Microsoft, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png, <<: *DEFAULTDIRECTNODE}
   - {name: Game, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png, <<: *DEFAULTNODE}
   - {name: Crypto, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Cryptocurrency.png, <<: *DEFAULTNODE}
   - {name: Pornhub, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Pornhub.png, <<: *DEFAULTNODE}
   - {name: Global, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png, <<: *DEFAULTNODE}
-  - {name: China, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/China.png, type: select, proxies: [直连, 🚀 全部手动]}
-  - {name: Final, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png, <<: *DEFAULTNODE}
+  - {name: China, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/China.png, <<: *DEFAULTDIRECTNODE}
+  - {name: Final, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png, type: fallback, <<: *HEALTH, proxies: [🥇 主力手动,🥇 主力自动, 🥈 备用自动]}
 
   # 基础聚合
   - {name: 🚀 全部手动, type: select, use: [main,secondary]}
@@ -295,38 +296,26 @@ rules:
   - RULE-SET,private-domain,DIRECT
   - RULE-SET,private-ip,DIRECT,no-resolve
 
-  # Apple 基础设施：时间同步与推送服务直连
-  - DOMAIN,time.apple.com,DIRECT
-  - DOMAIN,time.asia.apple.com,DIRECT
-  - DOMAIN,push.apple.com,DIRECT
-  - DOMAIN,courier.push.apple.com,DIRECT
-  - DOMAIN,pushex.apple.com,DIRECT
-
-  # Tailscale：海外 DERP 中继走代理，控制面及其他官方域名直连
-  - DOMAIN-REGEX,^derp[a-z0-9-]*\.tailscale\.com$,Global
-  - DOMAIN,login.tailscale.com,DIRECT
-  - DOMAIN,controlplane.tailscale.com,DIRECT
   - RULE-SET,tailscale-domain,DIRECT
 
-  - DOMAIN-SUFFIX,themoviedb.org,TMDB
-  - DOMAIN-SUFFIX,tmdb.org,TMDB
-  - DOMAIN-SUFFIX,tmdb.com,TMDB
-  - DOMAIN-SUFFIX,thetvdb.com,TMDB
-  - DOMAIN-SUFFIX,tvdb.com,TMDB
-  - DOMAIN-SUFFIX,tvdb.org,TMDB
+  - DOMAIN-KEYWORD,tmdb,TMDB
+  - DOMAIN-KEYWORD,tvdb,TMDB
+  - DOMAIN-KEYWORD,imdb,TMDB
+  - DOMAIN-KEYWORD,opensubtitles,TMDB
   - DOMAIN-SUFFIX,fanart.tv,TMDB
-  - DOMAIN-SUFFIX,imdb.com,TMDB
-  - DOMAIN-SUFFIX,imdb-api.com,TMDB
-  - DOMAIN-SUFFIX,media-amazon.com,TMDB
   - DOMAIN-SUFFIX,trakt.tv,TMDB
   - DOMAIN-SUFFIX,omdbapi.com,TMDB
-  - DOMAIN-SUFFIX,opensubtitles.org,TMDB
-  - DOMAIN-SUFFIX,opensubtitles.com,TMDB
+  - DOMAIN-SUFFIX,media-amazon.com,TMDB
 
   # Apple：大陆服务与 iCloud 优先直连，其他 Apple 服务使用苹果策略组
+  - DOMAIN-SUFFIX,push.apple.com,DIRECT 
+  - DOMAIN,captive.apple.com,DIRECT
+  - DOMAIN-KEYWORD,time.apple,DIRECT 
   - RULE-SET,apple-cn-domain,直连
   - RULE-SET,icloud-domain,直连
   - RULE-SET,apple-domain,Apple
+  - IP-CIDR,17.0.0.0/8,DIRECT,no-resolve
+
 
   - RULE-SET,ai-domain,AI
   - RULE-SET,youtube-domain,YouTube
@@ -356,20 +345,18 @@ rules:
   - RULE-SET,sex-domain,Pornhub
 
   - "RULE-SET,geolocation-domain,🥇 主力手动"
-  - RULE-SET,china-domain,直连
+  - RULE-SET,china-domain,🥇 主力手动
 
   # 全局 IP 规则集中兜底（所有域名均未命中时，才匹配 IP 规则）
-  - RULE-SET,netflix-ip,Streaming,no-resolve
-  - RULE-SET,telegram-ip,Telegram,no-resolve
-  - RULE-SET,google-ip,Google,no-resolve
-  - RULE-SET,twitter-ip,Twitter,no-resolve
+  - RULE-SET,netflix-ip,Streaming
+  - RULE-SET,telegram-ip,Telegram
+  - RULE-SET,google-ip,Google
+  - RULE-SET,twitter-ip,Twitter
   # 必须触发真实解析：用于在规则末尾捕获前置域名集未收录的冷门国内服务，若加 no-resolve 会导致其跳过判定而误入 MATCH 兜底代理
   - RULE-SET,china-ip,直连
 
   # 最终兜底：匹配以上所有规则均未命中的流量
   - MATCH,Final
-
-
 
 rule-providers:
   fakeipfilter-cn: {<<: *DOMAINTEXT, url: "https://raw.githubusercontent.com/likonion/configs/refs/heads/main/rules/fakeipfilter-cn.list"}
