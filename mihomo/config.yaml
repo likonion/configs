@@ -121,6 +121,9 @@ dns:
     - rule-set:icloud-domain
   #  DNS 分流 nameserver-policy 优先级高于 nameserver/fallback
   nameserver-policy:
+    "+.apple.com,+.itunes.apple.com,+.music.apple.com,+.mzstatic.com":
+      - https://dns.alidns.com/dns-query#disable-qtype-65=true
+      - https://doh.pub/dns-query#disable-qtype-65=true
     # 策略分流解析器：针对国内服务与内网/直连域名，强制禁用 HTTPS (Type 65) 查询，防止现代浏览器（如 Safari/Chrome）获取 ECH/SVCB 加密扩展导致分流失效或握手卡顿
     "rule-set:china-domain,private-domain,apple-cn-domain,icloud-domain,fakeipfilter-cn,fakeip-filter":
       - https://dns.alidns.com/dns-query#disable-qtype-65=true
@@ -128,17 +131,17 @@ dns:
 
     # 海外特例服务解析器：针对需要真实海外 IP 的特殊应用（如海外 STUN/游戏对战/对时等），指定走主力代理节点查询纯净 Google DoH，同样禁用 Type 65 避免解析异常
     "rule-set:fakeipfilter-!cn":
-      - "https://8.8.8.8/dns-query#🚀 全部手动&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#Final&disable-qtype-65=true"
 
    
   # DNS 主要域名配置
   # 支持 UDP，TCP，DoT，DoH，DoQ
   # 这部分为主要 DNS 配置，影响所有直连，确保使用对大陆解析精准的 DNS
   nameserver:
-    - "https://1.1.1.1/dns-query#🚀 全部手动&ecs=223.5.5.0/24"
-    - "https://8.8.8.8/dns-query#🚀 全部手动&ecs=223.5.5.0/24"
+    - "https://1.1.1.1/dns-query#Final&ecs=223.5.5.0/24"
+    - "https://8.8.8.8/dns-query#Final&ecs=223.5.5.0/24"
   fallback:
-    - "https://8.8.8.8/dns-query#🚀 全部手动手动"
+    - "https://8.8.8.8/dns-query#Final"
   fallback-filter:
     geoip: true
     geoip-code: CN
@@ -240,7 +243,7 @@ proxy-groups:
   - {name: Twitter, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png, <<: *DEFAULTNODE}
   - {name: GitHub, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png, <<: *DEFAULTNODE}
   - {name: Telegram, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png, <<: *DEFAULTNODE}
-  - {name: Apple, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png, <<: *DEFAULTNODE}
+  - {name: Apple, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png, <<: *DEFAULTDIRECTNODE}
   - {name: TMDB, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png, <<: *DEFAULTNODE}
   - {name: Streaming, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Streaming.png, <<: *DEFAULTNODE}
   - {name: Microsoft, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png, <<: *DEFAULTDIRECTNODE}
@@ -249,7 +252,7 @@ proxy-groups:
   - {name: Pornhub, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Pornhub.png, <<: *DEFAULTNODE}
   - {name: Global, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png, <<: *DEFAULTNODE}
   - {name: China, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/China.png, <<: *DEFAULTDIRECTNODE}
-  - {name: Final, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png, type: fallback, <<: *HEALTH, proxies: [🥇 主力手动,🥇 主力自动, 🥈 备用自动]}
+  - {name: Final, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png, <<: *DEFAULTNODE}
 
   # 基础聚合
   - {name: 🚀 全部手动, type: select, use: [main,secondary]}
@@ -285,8 +288,17 @@ rules:
   # 拦截失效/离线的云服务器节点，防止内网设备持续发起无效直连导致日志频繁刷 i/o timeout
   - IP-CIDR,110.42.12.249/32,REJECT,no-resolve
 
+  # Apple：大陆服务与 iCloud 优先直连，其他 Apple 服务使用苹果策略组
+  - DOMAIN-SUFFIX,push.apple.com,DIRECT 
+  - DOMAIN,captive.apple.com,DIRECT
+  - DOMAIN-KEYWORD,time.apple,DIRECT 
+  - RULE-SET,apple-cn-domain,直连
+  - RULE-SET,icloud-domain,直连
+  - RULE-SET,apple-domain,Apple
+  - IP-CIDR,17.0.0.0/8,DIRECT,no-resolve
+
   # 禁用 QUIC (UDP 443)，强制回退 TCP 以确保分流准确与连接稳定
-  - AND,((RULE-SET,cn!_domain),(DST-PORT,443),(NETWORK,UDP)),REJECT
+  - AND,((RULE-SET,geolocation-domain),(DST-PORT,443),(NETWORK,UDP)),REJECT
   # 广告 / 拒绝
   - RULE-SET,ads-reject,REJECT
 
@@ -305,16 +317,6 @@ rules:
   - DOMAIN-SUFFIX,trakt.tv,TMDB
   - DOMAIN-SUFFIX,omdbapi.com,TMDB
   - DOMAIN-SUFFIX,media-amazon.com,TMDB
-
-  # Apple：大陆服务与 iCloud 优先直连，其他 Apple 服务使用苹果策略组
-  - DOMAIN-SUFFIX,push.apple.com,DIRECT 
-  - DOMAIN,captive.apple.com,DIRECT
-  - DOMAIN-KEYWORD,time.apple,DIRECT 
-  - RULE-SET,apple-cn-domain,直连
-  - RULE-SET,icloud-domain,直连
-  - RULE-SET,apple-domain,Apple
-  - IP-CIDR,17.0.0.0/8,DIRECT,no-resolve
-
 
   - RULE-SET,ai-domain,AI
   - RULE-SET,youtube-domain,YouTube
@@ -343,7 +345,7 @@ rules:
   - RULE-SET,crypto-domain,Crypto
   - RULE-SET,sex-domain,Pornhub
 
-  - "RULE-SET,geolocation-domain,🚀 全部手动"
+  - RULE-SET,geolocation-domain,Global
 
   # 全局 IP 规则集中兜底（所有域名均未命中时，才匹配 IP 规则）
   - RULE-SET,netflix-ip,Streaming
@@ -351,7 +353,7 @@ rules:
   - RULE-SET,google-ip,Google
   - RULE-SET,twitter-ip,Twitter
   # 必须触发真实解析：用于在规则末尾捕获前置域名集未收录的冷门国内服务，若加 no-resolve 会导致其跳过判定而误入 MATCH 兜底代理
-  - RULE-SET,china-ip,直连
+  - RULE-SET,china-ip,China
 
   # 最终兜底：匹配以上所有规则均未命中的流量
   - MATCH,Final
