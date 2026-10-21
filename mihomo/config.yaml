@@ -344,16 +344,16 @@ rules:
   - RULE-SET,crypto-domain,Crypto
   - RULE-SET,sex-domain,Pornhub
 
-  - "RULE-SET,geolocation-domain,🥇 主力手动"
-  - RULE-SET,china-domain,🥇 主力手动
+  - RULE-SET,china-domain,China
+  - "RULE-SET,geolocation-domain,🛟 故障转移"
 
   # 全局 IP 规则集中兜底（所有域名均未命中时，才匹配 IP 规则）
-  - RULE-SET,netflix-ip,Streaming
-  - RULE-SET,telegram-ip,Telegram
-  - RULE-SET,google-ip,Google
-  - RULE-SET,twitter-ip,Twitter
+  - RULE-SET,netflix-ip,Streaming,no-resolve
+  - RULE-SET,telegram-ip,Telegram,no-resolve
+  - RULE-SET,google-ip,Google,no-resolve
+  - RULE-SET,twitter-ip,Twitter,no-resolve
   # 必须触发真实解析：用于在规则末尾捕获前置域名集未收录的冷门国内服务，若加 no-resolve 会导致其跳过判定而误入 MATCH 兜底代理
-  - RULE-SET,china-ip,直连
+  - RULE-SET,china-ip,China
 
   # 最终兜底：匹配以上所有规则均未命中的流量
   - MATCH,Final
