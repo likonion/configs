@@ -101,7 +101,6 @@ geox-url:
 
 ntp:
   enable: true
-  write-to-system: true
 
 tun:
   enable: true
@@ -111,7 +110,7 @@ tun:
   auto-redirect: true
   auto-detect-interface: true
   route-exclude-address-set:
-    - china-domain
+    - china-ip
 
 dns:
   enable: true # 关闭将使用系统 DNS
@@ -162,7 +161,6 @@ dns:
   # 支持 UDP，TCP，DoT，DoH，DoQ
   # 这部分为主要 DNS 配置，影响所有直连，确保使用对大陆解析精准的 DNS
   nameserver:
-    - "https://1.1.1.1/dns-query#Final&ecs=223.5.5.0/24"
     - "https://8.8.8.8/dns-query#Final&ecs=223.5.5.0/24"
   fallback:
     - "https://8.8.8.8/dns-query#Final"
@@ -216,8 +214,7 @@ sniffer:
     - "+.lumiunited.com"
     - "+.ankasa.cn"
 
-    # 米家 / 小米 IoT (去除原无效的 "Mijia Cloud")
-    - "+.io.mi.com"
+    # 米家 / 小米 IoT 
     - "+.mi.com"
     - "+.xiaomi.com"
     - "+.mi-idc.com"
@@ -282,9 +279,9 @@ proxy-groups:
   - {name: 🚀 全部手动, type: select, use: [main,secondary]}
   - {name: 🥇 主力手动, type: select, use: [main]}
   - {name: 🥈 备用手动, type: select, use: [secondary]}
-  - {name: 🧭 全部自动, type: url-test, use: [main,secondary], url: "https://www.gstatic.com/generate_204", <<: *HEALTH, hidden: true}
-  - {name: 🥇 主力自动, type: url-test, use: [main], url: "https://www.gstatic.com/generate_204", <<: *HEALTH, hidden: true}
-  - {name: 🥈 备用自动, type: url-test, use: [secondary], url: "https://www.gstatic.com/generate_204", <<: *HEALTH, hidden: true}
+  - {name: 🧭 全部自动, type: url-test, use: [main,secondary], <<: *HEALTH, hidden: true}
+  - {name: 🥇 主力自动, type: url-test, use: [main], <<: *HEALTH, hidden: true}
+  - {name: 🥈 备用自动, type: url-test, use: [secondary], <<: *HEALTH, hidden: true}
   - {name: 🛟 故障转移, type: fallback, <<: *HEALTH, proxies: [🥇 主力自动, 🥈 备用自动]}
 
   # 地区分组
@@ -314,7 +311,7 @@ rules:
   - IP-CIDR,118.31.169.4/32,REJECT,no-resolve
 
   # 禁用 QUIC (UDP 443)，强制回退 TCP 以确保分流准确与连接稳定
-  - AND,((RULE-SET,geolocation-domain),(DST-PORT,443),(NETWORK,UDP)),REJECT-DROP
+  - AND,((RULE-SET,geolocation-domain),(DST-PORT,443),(NETWORK,UDP)),REJECT
   # 广告 / 拒绝
   - RULE-SET,ads-reject,REJECT-DROP
 
@@ -364,6 +361,7 @@ rules:
   - RULE-SET,sex-domain,Pornhub
 
   - RULE-SET,geolocation-domain,Global
+  - RULE-SET,china-domain,China
 
   # 全局 IP 规则集中兜底（所有域名均未命中时，才匹配 IP 规则）
   - RULE-SET,netflix-ip,Streaming
