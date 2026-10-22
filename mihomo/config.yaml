@@ -47,7 +47,8 @@ rule-anchor:
   # 节点选择
   DEFAULTNODE: &DEFAULTNODE {type: select, proxies: [🛟 故障转移, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动, 🇭🇰 香港, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇭🇰 香港故障转移, 🇺🇸 美国, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇺🇸 美国故障转移, 🇯🇵 日本, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇯🇵 日本故障转移, 🇸🇬 新加坡, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区, 直连]}
   DEFAULTDIRECTNODE: &DEFAULTDIRECTNODE {type: select, proxies: [直连, 🛟 故障转移, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动, 🇭🇰 香港, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇭🇰 香港故障转移, 🇺🇸 美国, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇺🇸 美国故障转移, 🇯🇵 日本, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇯🇵 日本故障转移, 🇸🇬 新加坡, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区]}
-  INTLNODE: &INTLNODE {type: select, proxies: [🇺🇸 美国故障转移, 🇯🇵 日本故障转移, 🇭🇰 香港故障转移, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动]}
+  INTLNODE: &INTLNODE {type: select, proxies: [🇺🇸 美国故障转移, 🇯🇵 日本故障转移, 🇭🇰 香港故障转移, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动, 直连]}
+  ASIANODE: &ASIANODE {type: select, proxies: [🇭🇰 香港故障转移, 🇯🇵 日本故障转移, 🇺🇸 美国故障转移, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动, 直连]}
   HEALTH: &HEALTH {url: "https://www.gstatic.com/generate_204", interval: 600, timeout: 3000, lazy: true, max-failed-times: 3}
   # 节点筛选
   HK: &HK '(?i)(港|hk|hong[\s-]?kong)'
@@ -262,10 +263,10 @@ proxies:
 proxy-groups:
   - {name: AI, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png, <<: *INTLNODE}
   - {name: Google, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png, <<: *INTLNODE}
-  - {name: YouTube, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png, <<: *DEFAULTNODE}
+  - {name: YouTube, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png, <<: *ASIANODE}
   - {name: Twitter, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png, <<: *DEFAULTNODE}
-  - {name: GitHub, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png, <<: *DEFAULTNODE}
-  - {name: Telegram, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png, <<: *DEFAULTNODE}
+  - {name: GitHub, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png, <<: *ASIANODE}
+  - {name: Telegram, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png, <<: *ASIANODE}
   - {name: Apple, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png, <<: *DEFAULTDIRECTNODE}
   - {name: TMDB, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png, <<: *DEFAULTNODE}
   - {name: Streaming, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Streaming.png, <<: *DEFAULTNODE}
@@ -273,9 +274,9 @@ proxy-groups:
   - {name: Game, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png, <<: *DEFAULTNODE}
   - {name: Crypto, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Cryptocurrency.png, <<: *DEFAULTNODE}
   - {name: Pornhub, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Pornhub.png, <<: *DEFAULTNODE}
-  - {name: Global, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png, <<: *DEFAULTNODE}
+  - {name: Global, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png, <<: *ASIANODE}
   - {name: China, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/China.png, <<: *DEFAULTDIRECTNODE}
-  - {name: Final, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png, <<: *DEFAULTNODE}
+  - {name: Final, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png, <<: *ASIANODE}
 
   # 基础聚合
   - {name: 🚀 全部手动, type: select, use: [main,secondary]}
@@ -313,9 +314,9 @@ rules:
   - IP-CIDR,118.31.169.4/32,REJECT,no-resolve
 
   # 禁用 QUIC (UDP 443)，强制回退 TCP 以确保分流准确与连接稳定
-  - AND,((RULE-SET,geolocation-domain),(DST-PORT,443),(NETWORK,UDP)),REJECT
+  - AND,((RULE-SET,geolocation-domain),(DST-PORT,443),(NETWORK,UDP)),REJECT-DROP
   # 广告 / 拒绝
-  - RULE-SET,ads-reject,REJECT
+  - RULE-SET,ads-reject,REJECT-DROP
 
   # LAN / 本地网络 / 私有地址
   - IP-CIDR,100.64.0.0/10,DIRECT,no-resolve # Tailscale Tailnet 网段
