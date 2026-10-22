@@ -115,7 +115,7 @@ stun.*.cn
 stun.*.*.cn
 #Steam 国内 CDN
 alibaba.cdn.steampipe.steamcontent.com
-
+#aqara
 +.ankasa.cn
 +.siliconflow.cn
 +.aqara.cn
@@ -123,3 +123,8 @@ alibaba.cdn.steampipe.steamcontent.com
 +.lumiunited.com
 +.getui.com
 +.gepush.com
+#Apple music
++.apple.com
++.itunes.apple.com
++.music.apple.com
++.mzstatic.com
