@@ -102,6 +102,16 @@ ntp:
   enable: true
   write-to-system: true
 
+tun:
+  enable: true
+  stack: mixed   # gvisor/mixed/system
+  dns-hijack: ["any:53", "tcp://any:53"]
+  auto-route: true
+  auto-redirect: true
+  auto-detect-interface: true
+  route-exclude-address-set:
+    - china-domain
+
 dns:
   enable: true # 关闭将使用系统 DNS
   cache-algorithm: arc # ARC 缓存算法
@@ -124,8 +134,7 @@ dns:
     - rule-set:fakeipfilter-!cn
     - rule-set:private-domain
     - rule-set:china-domain
-    - rule-set:apple-cn-domain
-    - rule-set:icloud-domain
+    - rule-set:apple-domain
   # 配置后面的nameserver、fallback和nameserver-policy向dns服务器的连接过程是否遵守遵守rules规则
   # 如果为false（默认值）则这三部分的dns服务器在未特别指定的情况下会直连
   # 如果为true，将会按照rules的规则匹配链接方式（走代理或直连），如果有特别指定则任然以指定值为准
@@ -139,7 +148,7 @@ dns:
   #  DNS 分流 nameserver-policy 优先级高于 nameserver/fallback
   nameserver-policy:
     # 策略分流解析器：针对国内服务与内网/直连域名，强制禁用 HTTPS (Type 65) 查询，防止现代浏览器（如 Safari/Chrome）获取 ECH/SVCB 加密扩展导致分流失效或握手卡顿
-    "rule-set:china-domain,private-domain,apple-cn-domain,icloud-domain,fakeipfilter-cn,dns-direct-domain":
+    "rule-set:china-domain,private-domain,apple-domain,fakeipfilter-cn,dns-direct-domain":
       - https://dns.alidns.com/dns-query#disable-qtype-65=true
       - https://doh.pub/dns-query#disable-qtype-65=true
 
@@ -303,15 +312,6 @@ rules:
   - IP-CIDR,110.42.12.249/32,REJECT,no-resolve
   - IP-CIDR,118.31.169.4/32,REJECT,no-resolve
 
-  # Apple：大陆服务与 iCloud 优先直连，其他 Apple 服务使用苹果策略组
-  - DOMAIN-SUFFIX,push.apple.com,DIRECT 
-  - DOMAIN,captive.apple.com,DIRECT
-  - DOMAIN-KEYWORD,time.apple,DIRECT 
-  - RULE-SET,apple-cn-domain,直连
-  - RULE-SET,icloud-domain,直连
-  - RULE-SET,apple-domain,Apple
-  - IP-CIDR,17.0.0.0/8,DIRECT,no-resolve
-
   # 禁用 QUIC (UDP 443)，强制回退 TCP 以确保分流准确与连接稳定
   - AND,((RULE-SET,geolocation-domain),(DST-PORT,443),(NETWORK,UDP)),REJECT
   # 广告 / 拒绝
@@ -337,6 +337,8 @@ rules:
   - RULE-SET,youtube-domain,YouTube
   - RULE-SET,google-domain,Google
   - RULE-SET,github-domain,GitHub
+  - RULE-SET,apple-tvplus-domain,Streaming
+  - RULE-SET,apple-domain,Apple
   - RULE-SET,microsoft-domain,Microsoft
 
   - RULE-SET,twitter-domain,Twitter
@@ -382,8 +384,7 @@ rule-providers:
   github-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/github.mrs"}
   microsoft-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs"}
   apple-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.mrs"}
-  apple-cn-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple-cn.mrs"}
-  icloud-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/icloud.mrs"}
+  apple-tvplus-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple-tvplus.mrs"}
   google-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs"}
   google-ip: {<<: *IP, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.mrs"}
   youtube-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"}
