@@ -63,27 +63,24 @@ rule-anchor:
   DOMAINTEXT: &DOMAINTEXT {type: http, interval: 86400, behavior: domain, format: text}
 
 
-port: 7890
-socks-port: 7891
-redir-port: 7892
-mixed-port: 7893
-tproxy-port: 7895
+mixed-port: 7890
 allow-lan: true
+bind-address: "*"
+ipv6: false
 mode: rule
-
 authentication: []
+skip-auth-prefixes:
+- 127.0.0.0/8
+- 192.168.0.0/16
 # RESTful API CORS标头配置
 external-controller-cors:
   allow-origins:
     - "*"
   allow-private-network: true
-
 # 统一测速延迟计算
 unified-delay: true
-
 # 多 IP 并发连接，优先使用最先成功的 IP
 tcp-concurrent: true
-
 profile:
   # 保存策略组选择结果
   store-selected: true
