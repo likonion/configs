@@ -309,8 +309,6 @@ rules:
 
   # 禁用 QUIC (UDP 443)，强制回退 TCP 以确保分流准确与连接稳定
   - AND,((RULE-SET,geolocation-domain),(DST-PORT,443),(NETWORK,UDP)),REJECT
-  # 广告 / 拒绝
-  - RULE-SET,ads-reject,REJECT-DROP
 
   # LAN / 本地网络 / 私有地址
   - IP-CIDR,100.64.0.0/10,DIRECT,no-resolve # Tailscale Tailnet 网段
@@ -375,7 +373,6 @@ rule-providers:
   dns-direct-domain: {<<: *DOMAINTEXT, url: "https://raw.githubusercontent.com/likonion/configs/refs/heads/main/rules/dns-direct-domain.list"}
   fakeipfilter-cn: {<<: *DOMAINTEXT, url: "https://raw.githubusercontent.com/likonion/configs/refs/heads/main/rules/fakeipfilter-cn.list"}
   fakeipfilter-!cn: {<<: *DOMAINTEXT, url: "https://raw.githubusercontent.com/likonion/configs/refs/heads/main/rules/fakeipfilter-!cn.list"}
-  ads-reject: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ads-all.mrs"}
   ai-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.mrs"}
   github-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/github.mrs"}
   microsoft-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs"}
