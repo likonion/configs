@@ -254,6 +254,7 @@ proxy-groups:
   - {name: Google, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png, <<: *INTLNODE}
   - {name: YouTube, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png, <<: *ASIANODE}
   - {name: Twitter, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png, <<: *DEFAULTNODE}
+  - {name: Instagram, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Instagram.png, <<: *INTLNODE}
   - {name: GitHub, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png, <<: *ASIANODE}
   - {name: Telegram, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png, <<: *ASIANODE}
   - {name: Apple, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png, <<: *DEFAULTDIRECTNODE}
@@ -329,6 +330,7 @@ rules:
   - RULE-SET,apple-domain,Apple
   - RULE-SET,microsoft-domain,Microsoft
 
+  - RULE-SET,instagram-domain,Instagram
   - RULE-SET,twitter-domain,Twitter
   - RULE-SET,tiktok-domain,Streaming
   - RULE-SET,netflix-domain,Streaming
@@ -358,6 +360,7 @@ rules:
   - RULE-SET,telegram-ip,Telegram
   - RULE-SET,google-ip,Google
   - RULE-SET,twitter-ip,Twitter
+  - RULE-SET,instagram-ip,Instagram
   # 必须触发真实解析：用于在规则末尾捕获前置域名集未收录的冷门国内服务，若加 no-resolve 会导致其跳过判定而误入 MATCH 兜底代理
   - RULE-SET,china-ip,China
 
@@ -400,3 +403,5 @@ rule-providers:
   tailscale-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tailscale.mrs"}
   twitter-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/twitter.mrs"}
   twitter-ip: {<<: *IP, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/twitter.mrs"}
+  instagram-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/instagram.mrs"}
+  instagram-ip: {<<: *IP, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/instagram.mrs"}
