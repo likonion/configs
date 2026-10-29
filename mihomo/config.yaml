@@ -122,6 +122,7 @@ dns:
   # fake-ip-filter 和 nameserver-policy 保持同步
   fake-ip-filter:
     # behavior 必须为 domain/classical，当为 classical 时仅会生效域名类规则
+    - rule-set:custom-direct-domain
     - rule-set:fakeipfilter-cn
     - rule-set:fakeipfilter-!cn
     - rule-set:private-domain
@@ -140,7 +141,7 @@ dns:
   #  DNS 分流 nameserver-policy 优先级高于 nameserver/fallback
   nameserver-policy:
     # 策略分流解析器：针对国内服务与内网/直连域名，强制禁用 HTTPS (Type 65) 查询，防止现代浏览器（如 Safari/Chrome）获取 ECH/SVCB 加密扩展导致分流失效或握手卡顿
-    "rule-set:china-domain,private-domain,apple-domain,fakeipfilter-cn,dns-direct-domain":
+    "rule-set:china-domain,private-domain,apple-domain,fakeipfilter-cn,custom-direct-domain":
       - https://dns.alidns.com/dns-query#disable-qtype-65=true
       - https://doh.pub/dns-query#disable-qtype-65=true
 
@@ -300,9 +301,7 @@ proxy-groups:
   - {name: 🌍 其他地区, type: select, use: [main,secondary], filter: *OTHER}
 
 rules:
-  # 拦截失效/离线的云服务器节点，防止内网设备持续发起无效直连导致日志频繁刷 i/o timeout
-  - IP-CIDR,110.42.12.249/32,REJECT,no-resolve
-  - IP-CIDR,118.31.169.4/32,REJECT,no-resolve
+  - RULE-SET,custom-direct-domain,China
 
   # 禁用 QUIC (UDP 443)，强制回退 TCP 以确保分流准确与连接稳定
   - AND,((RULE-SET,geolocation-domain),(DST-PORT,443),(NETWORK,UDP)),REJECT
@@ -371,7 +370,7 @@ rules:
   - MATCH,Final
 
 rule-providers:
-  dns-direct-domain: {<<: *DOMAINTEXT, url: "https://raw.githubusercontent.com/likonion/configs/refs/heads/main/rules/dns-direct-domain.list"}
+  custom-direct-domain: {<<: *DOMAINTEXT, url: "https://raw.githubusercontent.com/likonion/configs/refs/heads/main/rules/custom-direct-domain.list"}
   fakeipfilter-cn: {<<: *DOMAINTEXT, url: "https://raw.githubusercontent.com/likonion/configs/refs/heads/main/rules/fakeipfilter-cn.list"}
   fakeipfilter-!cn: {<<: *DOMAINTEXT, url: "https://raw.githubusercontent.com/likonion/configs/refs/heads/main/rules/fakeipfilter-!cn.list"}
   ai-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.mrs"}
