@@ -361,7 +361,6 @@ rules:
   - RULE-SET,telegram-ip,Telegram
   - RULE-SET,google-ip,Google
   - RULE-SET,twitter-ip,Twitter
-  - RULE-SET,instagram-ip,Instagram
   - RULE-SET,facebook-ip,Facebook
   # 必须触发真实解析：用于在规则末尾捕获前置域名集未收录的冷门国内服务，若加 no-resolve 会导致其跳过判定而误入 MATCH 兜底代理
   - RULE-SET,china-ip,China
@@ -406,6 +405,5 @@ rule-providers:
   twitter-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/twitter.mrs"}
   twitter-ip: {<<: *IP, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/twitter.mrs"}
   instagram-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/instagram.mrs"}
-  instagram-ip: {<<: *IP, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/instagram.mrs"}
   facebook-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/facebook.mrs"}
   facebook-ip: {<<: *IP, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/facebook.mrs"}
