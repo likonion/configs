@@ -23,6 +23,10 @@
 #   https://wiki.metacubex.one/
 # • Stash wiki：
 #   https://stash.wiki/
+# • MetaCubeX：
+#   https://github.com/MetaCubeX/meta-rules-dat
+# • 配置参考：
+#   https://github.com/qichiyuhub/rule
 # ══════════════════════════════════════════════════════════════
 
 # ------------------------------------------------------------------------------------------------
@@ -249,26 +253,25 @@ proxy-providers:
 
 proxies:
   - {name: 直连, type: direct, udp: true}
-
 proxy-groups:
-  - {name: AI, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png, <<: *INTLNODE}
-  - {name: Google, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png, <<: *INTLNODE}
-  - {name: YouTube, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png, <<: *ASIANODE}
-  - {name: Twitter, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png, <<: *DEFAULTNODE}
-  - {name: Instagram, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Instagram.png, <<: *INTLNODE}
-  - {name: Facebook, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Facebook.png, <<: *INTLNODE}
-  - {name: GitHub, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png, <<: *ASIANODE}
-  - {name: Telegram, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png, <<: *ASIANODE}
-  - {name: Apple, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png, <<: *DEFAULTDIRECTNODE}
-  - {name: TMDB, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png, <<: *DEFAULTNODE}
-  - {name: Streaming, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Streaming.png, <<: *DEFAULTNODE}
-  - {name: Microsoft, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png, <<: *DEFAULTDIRECTNODE}
-  - {name: Game, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png, <<: *DEFAULTNODE}
-  - {name: Crypto, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Cryptocurrency.png, <<: *DEFAULTNODE}
-  - {name: Pornhub, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Pornhub.png, <<: *DEFAULTNODE}
-  - {name: Global, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png, <<: *ASIANODE}
-  - {name: China, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/China.png, <<: *DEFAULTDIRECTNODE}
-  - {name: Final, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png, <<: *ASIANODE}
+
+  - {name: AI, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/AI.png, <<: *INTLNODE}
+  - {name: Google, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Google.png, <<: *INTLNODE}
+  - {name: YouTube, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Youtube.png, <<: *ASIANODE}
+  - {name: X, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Twitter.png, <<: *DEFAULTNODE}
+  - {name: Meta, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Meta.png, <<: *INTLNODE}
+  - {name: GitHub, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/GitHub.png, <<: *ASIANODE}
+  - {name: Telegram, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Telegram.png, <<: *ASIANODE}
+  - {name: Apple, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Apple.png, <<: *DEFAULTDIRECTNODE}
+  - {name: TMDB, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/ForeignMedia.png, <<: *DEFAULTNODE}
+  - {name: Streaming, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Streaming.png, <<: *DEFAULTNODE}
+  - {name: Microsoft, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Microsoft.png, <<: *DEFAULTDIRECTNODE}
+  - {name: Game, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Game.png, <<: *DEFAULTDIRECTNODE}
+  - {name: Crypto, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Cryptocurrency.png, <<: *DEFAULTNODE}
+  - {name: Pornhub, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Pornhub.png, <<: *DEFAULTNODE}
+  - {name: Global, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Global.png, <<: *ASIANODE}
+  - {name: China, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/China.png, <<: *DEFAULTDIRECTNODE}
+  - {name: Final, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Final.png, <<: *ASIANODE}
 
   # 基础聚合
   - {name: 🚀 全部手动, type: select, use: [main,secondary]}
@@ -323,6 +326,7 @@ rules:
   - DOMAIN-SUFFIX,media-amazon.com,TMDB
 
   - RULE-SET,ai-domain,AI
+  - RULE-SET,meta-domain,Meta
   - RULE-SET,youtube-domain,YouTube
   - RULE-SET,google-domain,Google
   - RULE-SET,github-domain,GitHub
@@ -330,9 +334,7 @@ rules:
   - RULE-SET,apple-domain,Apple
   - RULE-SET,microsoft-domain,Microsoft
 
-  - RULE-SET,instagram-domain,Instagram
-  - RULE-SET,facebook-domain,Facebook
-  - RULE-SET,twitter-domain,Twitter
+  - RULE-SET,x-domain,X
   - RULE-SET,tiktok-domain,Streaming
   - RULE-SET,netflix-domain,Streaming
   - RULE-SET,disney-domain,Streaming
@@ -343,11 +345,7 @@ rules:
   - DOMAIN-SUFFIX,steamcontent.com,DIRECT
   - DOMAIN-SUFFIX,cm.steampowered.com,DIRECT
   - DOMAIN-SUFFIX,steamstatic.com,DIRECT
-  - RULE-SET,steam-domain,Game
-  - RULE-SET,epic-domain,Game
-  - RULE-SET,nintendo-domain,Game
-  - RULE-SET,playstation-domain,Game
-  - RULE-SET,ea-domain,Game
+  - RULE-SET,games-domain,Game
   - RULE-SET,telegram-domain,Telegram
   
   - RULE-SET,crypto-domain,Crypto
@@ -360,8 +358,6 @@ rules:
   - RULE-SET,netflix-ip,Streaming
   - RULE-SET,telegram-ip,Telegram
   - RULE-SET,google-ip,Google
-  - RULE-SET,twitter-ip,Twitter
-  - RULE-SET,facebook-ip,Facebook
   # 必须触发真实解析：用于在规则末尾捕获前置域名集未收录的冷门国内服务，若加 no-resolve 会导致其跳过判定而误入 MATCH 兜底代理
   - RULE-SET,china-ip,China
 
@@ -387,11 +383,7 @@ rule-providers:
   amazon-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/amazon.mrs"}
   hbo-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/hbo.mrs"}
   spotify-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/spotify.mrs"}
-  steam-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam.mrs"}
-  epic-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/epicgames.mrs"}
-  nintendo-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/nintendo.mrs"}
-  playstation-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/playstation.mrs"}
-  ea-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ea.mrs"}
+  games-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-games.mrs"}
   crypto-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-cryptocurrency.mrs"}
   telegram-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs"}
   telegram-ip: {<<: *IP, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs"}
@@ -402,8 +394,6 @@ rule-providers:
   private-ip: {<<: *IP, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs"}
   sex-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-porn.mrs"}
   tailscale-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tailscale.mrs"}
-  twitter-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/twitter.mrs"}
-  twitter-ip: {<<: *IP, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/twitter.mrs"}
-  instagram-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/instagram.mrs"}
-  facebook-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/facebook.mrs"}
-  facebook-ip: {<<: *IP, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/facebook.mrs"}
+  x-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/x.mrs"}
+  # Facebook + Instagram + Threads + WhatsApp + Oculus/Quest + Meta AI 
+  meta-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/meta.mrs"}
