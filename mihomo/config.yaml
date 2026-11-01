@@ -255,23 +255,23 @@ proxies:
   - {name: 直连, type: direct, udp: true}
 proxy-groups:
 
-  - {name: AI, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/AI.png, <<: *INTLNODE}
-  - {name: Google, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Google.png, <<: *INTLNODE}
-  - {name: YouTube, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Youtube.png, <<: *ASIANODE}
-  - {name: X, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Twitter.png, <<: *DEFAULTNODE}
-  - {name: Meta, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Meta.png, <<: *INTLNODE}
-  - {name: GitHub, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/GitHub.png, <<: *ASIANODE}
-  - {name: Telegram, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Telegram.png, <<: *ASIANODE}
-  - {name: Apple, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Apple.png, <<: *DEFAULTDIRECTNODE}
-  - {name: TMDB, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/ForeignMedia.png, <<: *DEFAULTNODE}
-  - {name: Streaming, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Streaming.png, <<: *DEFAULTNODE}
-  - {name: Microsoft, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Microsoft.png, <<: *DEFAULTDIRECTNODE}
-  - {name: Game, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Game.png, <<: *DEFAULTDIRECTNODE}
-  - {name: Crypto, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Cryptocurrency.png, <<: *DEFAULTNODE}
-  - {name: Pornhub, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Pornhub.png, <<: *DEFAULTNODE}
-  - {name: Global, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Global.png, <<: *ASIANODE}
-  - {name: China, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/China.png, <<: *DEFAULTDIRECTNODE}
-  - {name: Final, icon: https://fastly.jsdelivr.net/gh/likonion/icons@main/Color/Final.png, <<: *ASIANODE}
+  - {name: AI, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/AI.png, <<: *INTLNODE}
+  - {name: Google, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Google.png, <<: *INTLNODE}
+  - {name: YouTube, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Youtube.png, <<: *ASIANODE}
+  - {name: X, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Twitter.png, <<: *DEFAULTNODE}
+  - {name: Meta, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Meta.png, <<: *INTLNODE}
+  - {name: GitHub, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/GitHub.png, <<: *ASIANODE}
+  - {name: Telegram, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Telegram.png, <<: *ASIANODE}
+  - {name: Apple, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Apple.png, <<: *DEFAULTDIRECTNODE}
+  - {name: TMDB, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/ForeignMedia.png, <<: *DEFAULTNODE}
+  - {name: Streaming, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Streaming.png, <<: *DEFAULTNODE}
+  - {name: Microsoft, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Microsoft.png, <<: *DEFAULTDIRECTNODE}
+  - {name: Game, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Game.png, <<: *DEFAULTDIRECTNODE}
+  - {name: Crypto, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Cryptocurrency.png, <<: *DEFAULTNODE}
+  - {name: Pornhub, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Pornhub.png, <<: *DEFAULTNODE}
+  - {name: Global, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Global.png, <<: *ASIANODE}
+  - {name: China, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/China.png, <<: *DEFAULTDIRECTNODE}
+  - {name: Final, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Final.png, <<: *ASIANODE}
 
   # 基础聚合
   - {name: 🚀 全部手动, type: select, use: [main,secondary]}
