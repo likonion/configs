@@ -273,10 +273,10 @@ proxy-groups:
   - {name: Game, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Game.png, <<: *DEFAULTDIRECTNODE}
   - {name: Crypto, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Cryptocurrency.png, <<: *DEFAULTNODE}
   - {name: Pornhub, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Pornhub.png, <<: *DEFAULTNODE}
-  - {name: Global, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Global.png, <<: *ASIANODE}
+  - {name: Global, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Global.png, <<: *DEFAULTNODE}
   - {name: China, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/China.png, <<: *DEFAULTDIRECTNODE}
   - {name: CustomProxy, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Proxy.png, <<: *DEFAULTNODE}
-  - {name: Final, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Final.png, <<: *ASIANODE}
+  - {name: Final, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Final.png, <<: *DEFAULTNODE}
 
   # 基础聚合
   - {name: 🚀 全部手动, type: select, use: [main,secondary]}
@@ -313,7 +313,7 @@ rules:
   - RULE-SET,custom-proxy-domain,CustomProxy
 
   # 禁用 QUIC (UDP 443)，强制回退 TCP 以确保分流准确与连接稳定
-  - AND,((OR,((RULE-SET,geolocation-domain),(RULE-SET,custom-proxy-domain))),(DST-PORT,443),(NETWORK,UDP)),REJECT
+  - AND,((RULE-SET,geolocation-domain),(DST-PORT,443),(NETWORK,UDP)),REJECT
 
   # LAN / 本地网络 / 私有地址
   - IP-CIDR,100.64.0.0/10,DIRECT,no-resolve # Tailscale Tailnet 网段
