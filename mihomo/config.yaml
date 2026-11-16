@@ -313,7 +313,7 @@ rules:
   - RULE-SET,custom-proxy-domain,CustomProxy
 
   # 禁用 QUIC (UDP 443)，强制回退 TCP 以确保分流准确与连接稳定
-  - AND,((RULE-SET,geolocation-domain),(DST-PORT,443),(NETWORK,UDP)),REJECT
+  - AND,((OR,((RULE-SET,geolocation-domain),(RULE-SET,custom-proxy-domain))),(DST-PORT,443),(NETWORK,UDP)),REJECT
 
   # LAN / 本地网络 / 私有地址
   - IP-CIDR,100.64.0.0/10,DIRECT,no-resolve # Tailscale Tailnet 网段
