@@ -1,0 +1,17 @@
+# 苹果词典 / 查阅 (Wikipedia / Spotlight)
+lookup-api.apple.com
+lookup-api-apple-com.v.aaplimg.com
+lookup-api.apple.com.edgekey.net
+smoot.apple.com
+
+# 苹果 News / Books / Fitness+ / 跨区媒体接口 (按需保留)
++.apple.news
+gspe1-ssl.ls.apple.com
+amp-api.podcasts.apple.com
+amp-api-edge.apps.apple.com
+
+# Apple Intelligence / Private Cloud Compute (如后续使用)
++.apple-relay.cloudflare.com
++.apple-relay.fastly-edge.com
++.apple-relay.apple.com
++.cp4.cloudflare.com
