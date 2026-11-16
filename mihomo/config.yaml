@@ -131,7 +131,7 @@ dns:
     - rule-set:fakeipfilter-!cn
     - rule-set:private-domain
     - rule-set:china-domain
-    - rule-set:apple-cn-domain
+    - rule-set:apple-domain
   # 配置后面的nameserver、fallback和nameserver-policy向dns服务器的连接过程是否遵守遵守rules规则
   # 如果为false（默认值）则这三部分的dns服务器在未特别指定的情况下会直连
   # 如果为true，将会按照rules的规则匹配链接方式（走代理或直连），如果有特别指定则任然以指定值为准
@@ -266,7 +266,7 @@ proxy-groups:
   - {name: Meta, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Meta.png, <<: *INTLNODE}
   - {name: GitHub, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/GitHub.png, <<: *ASIANODE}
   - {name: Telegram, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Telegram.png, <<: *ASIANODE}
-  # - {name: Apple, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Apple.png, <<: *DEFAULTDIRECTNODE}
+  - {name: Apple, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Apple.png, <<: *DEFAULTDIRECTNODE}
   - {name: TMDB, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/ForeignMedia.png, <<: *DEFAULTNODE}
   - {name: Streaming, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Streaming.png, <<: *DEFAULTNODE}
   - {name: Microsoft, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Microsoft.png, <<: *DEFAULTDIRECTNODE}
@@ -337,7 +337,7 @@ rules:
   - RULE-SET,google-domain,Google
   - RULE-SET,github-domain,GitHub
   - RULE-SET,apple-tvplus-domain,Streaming
-  - RULE-SET,apple-cn-domain,DIRECT
+  - RULE-SET,apple-domain,Apple
   - RULE-SET,microsoft-domain,Microsoft
 
   - RULE-SET,x-domain,X
@@ -378,7 +378,7 @@ rule-providers:
   ai-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.mrs"}
   github-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/github.mrs"}
   microsoft-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs"}
-  apple-cn-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple-cn.mrs"}
+  apple-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.mrs"}
   apple-tvplus-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple-tvplus.mrs"}
   google-domain: {<<: *DOMAIN, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs"}
   google-ip: {<<: *IP, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.mrs"}
