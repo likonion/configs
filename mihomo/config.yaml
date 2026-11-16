@@ -145,7 +145,7 @@ dns:
   #  DNS 分流 nameserver-policy 优先级高于 nameserver/fallback
   nameserver-policy:
     # 策略分流解析器：针对国内服务与内网/直连域名，强制禁用 HTTPS (Type 65) 查询，防止现代浏览器（如 Safari/Chrome）获取 ECH/SVCB 加密扩展导致分流失效或握手卡顿
-    "rule-set:china-domain,private-domain,apple-cn-domain,fakeipfilter-cn,custom-direct-domain":
+    "rule-set:china-domain,private-domain,apple-domain,fakeipfilter-cn,custom-direct-domain":
       - https://dns.alidns.com/dns-query#disable-qtype-65=true
       - https://doh.pub/dns-query#disable-qtype-65=true
 
