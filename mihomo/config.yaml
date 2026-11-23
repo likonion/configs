@@ -55,7 +55,8 @@ rule-anchor:
   TW: &TW '(?i)(台|tw|taiwan|taipei)'
   SG: &SG '(?i)(新|坡|狮城|sg|singapore)'
   US: &US '(?i)(美|us|united[\s-]?states|america)'
-  OTHER: &OTHER '^(?!.*(港|hk|hong[\s-]?kong|日|jp|japan|美|us|america|台|tw|taiwan|新|坡|狮城|sg|singapore|深|沪|京|川|流量|官网|到期|直连)).*$'
+  OTHER: &OTHER '(?i)^(?!.*(港|hk|hong[\s-]?kong|日|jp|japan|tokyo|osaka|美|us|united[\s-]?states|america|台|tw|taiwan|taipei|新|坡|狮城|sg|singapore|深|沪|京|川|流量|官网|到期|直连)).*$'
+
   # 规则集
   IP: &IP {type: http, interval: 86400, behavior: ipcidr, format: mrs}
   DOMAIN: &DOMAIN {type: http, interval: 86400, behavior: domain, format: mrs}
@@ -305,6 +306,7 @@ proxy-groups:
   - {name: 🇼🇸 台湾自动, type: url-test, use: [main], filter: *TW, <<: *HEALTH, hidden: true}
   - {name: 🇼🇸 备用台湾自动, type: url-test, use: [secondary], filter: *TW, <<: *HEALTH, hidden: true}
   - {name: 🌍 其他地区, type: select, use: [main,secondary], filter: *OTHER}
+  
 
 rules:
   - RULE-SET,custom-direct-domain,China
