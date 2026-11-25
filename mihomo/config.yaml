@@ -48,14 +48,15 @@ rule-anchor:
   DEFAULTDIRECTNODE: &DEFAULTDIRECTNODE {type: select, proxies: [直连, 🛟 故障转移, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动, 🇭🇰 香港, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇭🇰 香港故障转移, 🇺🇸 美国, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇺🇸 美国故障转移, 🇯🇵 日本, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇯🇵 日本故障转移, 🇸🇬 新加坡, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区]}
   INTLNODE: &INTLNODE {type: select, proxies: [🇺🇸 美国故障转移, 🇯🇵 日本故障转移, 🇭🇰 香港故障转移, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动, 直连]}
   ASIANODE: &ASIANODE {type: select, proxies: [🇭🇰 香港故障转移, 🇯🇵 日本故障转移, 🇺🇸 美国故障转移, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动, 直连]}
-  HEALTH: &HEALTH {url: "https://www.gstatic.com/generate_204", interval: 600, timeout: 3000, lazy: true, max-failed-times: 3}
+  HEALTH: &HEALTH {url: "https://www.gstatic.com/generate_204", interval: 600, timeout: 5000, lazy: true, max-failed-times: 3}
   # 节点筛选
   HK: &HK '(?i)(港|hk|hong[\s-]?kong)'
   JP: &JP '(?i)(日|jp|japan|tokyo|osaka)'
   TW: &TW '(?i)(台|tw|taiwan|taipei)'
   SG: &SG '(?i)(新|坡|狮城|sg|singapore)'
   US: &US '(?i)(美|us|united[\s-]?states|america)'
-  OTHER: &OTHER '^(?!.*(港|hk|hong[\s-]?kong|日|jp|japan|美|us|america|台|tw|taiwan|新|坡|狮城|sg|singapore|深|沪|京|川|流量|官网|到期|直连)).*$'
+  OTHER: &OTHER '(?i)^(?!.*(港|hk|hong[\s-]?kong|日|jp|japan|tokyo|osaka|美|us|united[\s-]?states|america|台|tw|taiwan|taipei|新|坡|狮城|sg|singapore|深|沪|京|川|流量|官网|到期|直连)).*$'
+
   # 规则集
   IP: &IP {type: http, interval: 86400, behavior: ipcidr, format: mrs}
   DOMAIN: &DOMAIN {type: http, interval: 86400, behavior: domain, format: mrs}
@@ -309,6 +310,7 @@ proxy-groups:
   - {name: 🇼🇸 台湾自动, type: url-test, use: [main], filter: *TW, <<: *HEALTH, hidden: true}
   - {name: 🇼🇸 备用台湾自动, type: url-test, use: [secondary], filter: *TW, <<: *HEALTH, hidden: true}
   - {name: 🌍 其他地区, type: select, use: [main,secondary], filter: *OTHER}
+  
 
 rules:
   - RULE-SET,custom-direct-domain,China
