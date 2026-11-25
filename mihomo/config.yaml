@@ -106,10 +106,6 @@ tun:
   auto-route: true
   auto-redirect: true
   auto-detect-interface: true
-  # 国内 IP 和私网段直接在路由层绕过 Mihomo，不进用户态转发
-  route-exclude-address-set:
-    - china-ip
-    - private-ip
 
 dns:
   enable: true # 关闭将使用系统 DNS
