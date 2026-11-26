@@ -46,8 +46,8 @@ rule-anchor:
   # 节点选择
   DEFAULTNODE: &DEFAULTNODE {type: select, proxies: [🛟 故障转移, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动, 🇭🇰 香港, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇭🇰 香港故障转移, 🇺🇸 美国, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇺🇸 美国故障转移, 🇯🇵 日本, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇯🇵 日本故障转移, 🇸🇬 新加坡, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区, 直连]}
   DEFAULTDIRECTNODE: &DEFAULTDIRECTNODE {type: select, proxies: [直连, 🛟 故障转移, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动, 🇭🇰 香港, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇭🇰 香港故障转移, 🇺🇸 美国, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇺🇸 美国故障转移, 🇯🇵 日本, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇯🇵 日本故障转移, 🇸🇬 新加坡, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区]}
-  INTLNODE: &INTLNODE {type: select, proxies: [🇺🇸 美国故障转移, 🇯🇵 日本故障转移, 🇭🇰 香港故障转移, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动, 直连]}
-  ASIANODE: &ASIANODE {type: select, proxies: [🇭🇰 香港故障转移, 🇯🇵 日本故障转移, 🇺🇸 美国故障转移, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动, 直连]}
+  INTLNODE: &INTLNODE {type: select, proxies: [🇺🇸 美国故障转移, 🇯🇵 日本故障转移, 🇭🇰 香港故障转移, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区, 🛟 故障转移, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动, 直连]}
+  ASIANODE: &ASIANODE {type: select, proxies: [🇭🇰 香港故障转移, 🇯🇵 日本故障转移, 🇺🇸 美国故障转移, 🇺🇸 美国自动, 🇺🇸 备用美国自动, 🇯🇵 日本自动, 🇯🇵 备用日本自动, 🇭🇰 香港自动, 🇭🇰 备用香港自动, 🇸🇬 新加坡自动, 🇸🇬 备用新加坡自动, 🇼🇸 台湾自动, 🇼🇸 备用台湾自动, 🌍 其他地区, 🛟 故障转移, 🥇 主力自动, 🥈 备用自动, 🧭 全部自动, 🥇 主力手动, 🥈 备用手动, 🚀 全部手动, 直连]}
   HEALTH: &HEALTH {url: "https://www.gstatic.com/generate_204", interval: 600, timeout: 5000, lazy: true, max-failed-times: 3}
   # 节点筛选
   HK: &HK '(?i)(港|hk|hong[\s-]?kong)'
@@ -260,11 +260,11 @@ proxy-groups:
 
   - {name: AI, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/AI.png, <<: *INTLNODE}
   - {name: Google, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Google.png, <<: *INTLNODE}
-  - {name: YouTube, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Youtube.png, <<: *ASIANODE}
+  - {name: YouTube, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Youtube.png, <<: *DEFAULTNODE}
   - {name: X, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Twitter.png, <<: *DEFAULTNODE}
   - {name: Meta, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Meta.png, <<: *INTLNODE}
-  - {name: GitHub, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/GitHub.png, <<: *ASIANODE}
-  - {name: Telegram, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Telegram.png, <<: *ASIANODE}
+  - {name: GitHub, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/GitHub.png, <<: *DEFAULTNODE}
+  - {name: Telegram, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Telegram.png, <<: *DEFAULTNODE}
   - {name: Apple, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Apple.png, <<: *DEFAULTDIRECTNODE}
   - {name: TMDB, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/ForeignMedia.png, <<: *DEFAULTNODE}
   - {name: Streaming, icon: https://raw.githubusercontent.com/likonion/icons/refs/heads/main/Color/Streaming.png, <<: *DEFAULTNODE}
